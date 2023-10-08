@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log"
 	"net/url"
 
 	"github.com/gin-gonic/gin"
@@ -117,5 +118,8 @@ func main() {
 	router.Handle("GET", "/:shortCode", getShortLink)
 	router.Handle("GET", "/:shortCode/*any", getShortLink)
 	router.Handle("GET", "/api/v1/newShortLink", newShortLink)
-	router.Run(port())
+	err := router.Run(port())
+	if err != nil {
+		log.Fatal(err)
+	}
 }
