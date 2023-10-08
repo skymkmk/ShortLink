@@ -110,6 +110,7 @@ func newShortLink(c *gin.Context) {
 
 func main() {
 	initTlds()
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	initSQL()
 	router.Handle("GET", "/", getShortLink)
