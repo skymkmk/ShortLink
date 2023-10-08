@@ -4,7 +4,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -69,4 +71,22 @@ func serveWeb(c *gin.Context) {
 		log.Fatal(err)
 	}
 	http.FileServer(statikFS).ServeHTTP(c.Writer, c.Request)
+}
+
+func port() string {
+	var port int = 3000
+	var err error
+	arguments := os.Args[1:]
+	for idx, val := range arguments {
+		if val == "-p" || val == "-port" {
+			if idx != len(arguments)-1 {
+				port, err = strconv.Atoi(arguments[idx+1])
+				if err != nil {
+					port = 3000
+				}
+			}
+			break
+		}
+	}
+	return ":" + strconv.Itoa(port)
 }

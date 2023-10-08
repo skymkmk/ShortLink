@@ -117,5 +117,5 @@ func main() {
 	router.Handle("GET", "/:shortCode", getShortLink)
 	router.Handle("GET", "/:shortCode/*any", getShortLink)
 	router.Handle("GET", "/api/v1/newShortLink", newShortLink)
-	router.Run(":3000")
+	router.Run(port())
 }
