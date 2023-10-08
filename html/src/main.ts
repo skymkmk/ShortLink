@@ -9,7 +9,7 @@ const button: HTMLButtonElement = document.getElementById(
 const notice: HTMLDivElement = document.getElementById(
   "notice"
 ) as HTMLDivElement;
-button.addEventListener("click", () => {
+function handleClick() {
   let url = realURL.value;
   url = encodeURIComponent(url);
   const searchParam: URLSearchParams = new URLSearchParams({
@@ -40,4 +40,11 @@ button.addEventListener("click", () => {
     .catch((e) => {
       notice.innerText = e;
     });
+}
+button.addEventListener("click", handleClick);
+realURL.addEventListener("keydown", (e: KeyboardEvent) => {
+  if (e.code === "Enter") {
+    e.preventDefault();
+    handleClick();
+  }
 });
