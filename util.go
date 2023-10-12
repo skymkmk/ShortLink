@@ -98,16 +98,12 @@ func isURL(theURL string) bool {
 		return false
 	}
 	if u.Host == "" {
-		u, err = url.Parse("http://" + theURL)
-		if err != nil {
-			return false
+		if isMagnetURL(theURL) {
+			return true
 		}
-		if u.Host == "" {
-			if isMagnetURL(theURL) {
-				return true
-			} else {
-				return false
-			}
+		u, err = url.Parse("http://" + theURL)
+		if err != nil || u.Host == "" {
+			return false
 		}
 	}
 	if !checkDomainAvailablity(u.Host) {
