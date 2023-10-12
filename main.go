@@ -7,8 +7,10 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"log"
 	"net/url"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mr-tron/base58"
@@ -44,8 +46,8 @@ func newShortLink(c *gin.Context) {
 		URLInvalid(c)
 		return
 	} else if u.Host == "" {
-		u, _ = url.Parse("http://" + realUrl)
-		if u.Host == "" {
+		u, err = url.Parse("http://" + realUrl)
+		if err != nil || u.Host == "" {
 			URLInvalid(c)
 			return
 		}
@@ -110,6 +112,12 @@ func newShortLink(c *gin.Context) {
 }
 
 func main() {
+	logFile, err := os.OpenFile("log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer logFile.Close()
+	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
 	initTlds()
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
@@ -118,7 +126,7 @@ func main() {
 	router.Handle("GET", "/:shortCode", getShortLink)
 	router.Handle("GET", "/:shortCode/*any", getShortLink)
 	router.Handle("GET", "/api/v1/newShortLink", newShortLink)
-	err := router.Run(port())
+	err = router.Run(port())
 	if err != nil {
 		log.Fatal(err)
 	}
