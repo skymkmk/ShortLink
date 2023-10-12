@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -45,7 +46,11 @@ func initTlds() {
 	domain_tld_regexp, _ = regexp.Compile(DOMAIN_TLD_REGEX)
 }
 
-func checkDomainAvailablity(domain string) bool {
+func checkHostAvailablity(domain string) bool {
+	ip := net.ParseIP(domain)
+	if ip != nil {
+		return ip.IsGlobalUnicast()
+	}
 	if len(tlds) == 0 {
 		log.Fatal("No TLDs")
 	}
@@ -106,7 +111,11 @@ func isURL(theURL string) bool {
 			return false
 		}
 	}
-	if !checkDomainAvailablity(u.Host) {
+	domain, _, err := net.SplitHostPort(u.Host)
+	if err != nil {
+		domain = u.Host
+	}
+	if !checkHostAvailablity(domain) {
 		return false
 	}
 	return true
