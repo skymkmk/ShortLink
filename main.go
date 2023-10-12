@@ -6,7 +6,6 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"io"
 	"log"
 	"net/url"
@@ -40,19 +39,7 @@ func newShortLink(c *gin.Context) {
 		URLInvalid(c)
 		return
 	}
-	u, err := url.Parse(realUrl)
-	fmt.Println(u.Host)
-	if err != nil {
-		URLInvalid(c)
-		return
-	} else if u.Host == "" {
-		u, err = url.Parse("http://" + realUrl)
-		if err != nil || u.Host == "" {
-			URLInvalid(c)
-			return
-		}
-	}
-	if !checkDomainAvailablity(u.Host) {
+	if !isURL(realUrl) {
 		URLInvalid(c)
 		return
 	}

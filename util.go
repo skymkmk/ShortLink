@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
@@ -89,4 +90,39 @@ func port() string {
 		}
 	}
 	return ":" + strconv.Itoa(port)
+}
+
+func isURL(theURL string) bool {
+	u, err := url.Parse(theURL)
+	if err != nil {
+		return false
+	}
+	if u.Host == "" {
+		u, err = url.Parse("http://" + theURL)
+		if err != nil {
+			return false
+		}
+		if u.Host == "" {
+			if isMagnetURL(theURL) {
+				return true
+			} else {
+				return false
+			}
+		}
+	}
+	if !checkDomainAvailablity(u.Host) {
+		return false
+	}
+	return true
+}
+
+func isMagnetURL(theURL string) bool {
+	u, err := url.Parse(theURL)
+	if err != nil {
+		return false
+	}
+	if u.Scheme == "magnet" {
+		return u.Query().Has("xt")
+	}
+	return false
 }
