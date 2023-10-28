@@ -61,3 +61,7 @@ body {
 .va {
   margin: 0 3px;
 }
+
+.textCenter {
+  text-align: center;
+}

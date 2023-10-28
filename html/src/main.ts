@@ -32,6 +32,12 @@ function handleClick() {
           } else {
             notice.innerText = data?.error ?? "";
           }
+          if ((data?.status ?? -1) === 0 || (data?.status ?? -1) === 3) {
+            try {
+              navigator.clipboard.writeText(data?.realURL ?? "");
+              notice.innerText += "\n链接已复制至剪贴板！"
+            } catch {}
+          }
         })
         .catch((e) => {
           notice.innerText = e;
