@@ -43,6 +43,7 @@ func newShortLink(c *gin.Context) {
 		URLInvalid(c)
 		return
 	}
+	realUrl = trackRemover(realUrl)
 	url2bytes := []byte(realUrl)
 	for {
 		hash := sha256.Sum256(url2bytes)

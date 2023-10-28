@@ -131,3 +131,12 @@ func isMagnetURL(theURL string) bool {
 	}
 	return false
 }
+
+func getFinalURL(link string) (string, error) {
+	client := http.Client{}
+	resp, err := client.Get(link)
+	if err != nil {
+		return "", err
+	}
+	return resp.Request.URL.String(), err
+}
